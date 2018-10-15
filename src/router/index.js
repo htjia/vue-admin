@@ -99,7 +99,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'Post',
         component: () => import('@/views/post/index'),
-        meta: { title: '岗位', icon: 'station' }
+        meta: { title: '岗位', icon: 'tree' }
       }
     ]
   },
