@@ -1,39 +1,37 @@
 <template>
   <PageHeaderLayout >
     <div id="chart" style="width: 100%;height: 200px;">12</div>
-    <div class="">
-      <el-table
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        fit
-        stripe
-        highlight-current-row>
-        <el-table-column align="center" label="序号" width="95">
-          <template slot-scope="scope">
-            {{ scope.$index }}
-          </template>
-        </el-table-column>
-        <el-table-column label="任务单号" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.code }}
-          </template>
-        </el-table-column>
-        <el-table-column label="设备单号" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.factorycode }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="名称" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.name }}
-          </template>
-        </el-table-column>
-        <!--<el-table-column align="center" prop="created_at" label="操作" width="200">--><!--<template slot-scope="scope">--><!--<el-button type="primary" size="mini" @click="detail(scope.row)"> <i class="el-icon-search"/> 查看详情</el-button>--><!--</template>-->
-        <!--</el-table-column>-->
-      </el-table>
-    </div>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      stripe
+      highlight-current-row>
+      <el-table-column align="center" label="序号" width="95">
+        <template slot-scope="scope">
+          {{ scope.$index+1 }}
+        </template>
+      </el-table-column>
+      <el-table-column label="任务单号" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.code }}
+        </template>
+      </el-table-column>
+      <el-table-column label="设备单号" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.factorycode }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="名称" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
+      <!--<el-table-column align="center" prop="created_at" label="操作" width="200">--><!--<template slot-scope="scope">--><!--<el-button type="primary" size="mini" @click="detail(scope.row)"> <i class="el-icon-search"/> 查看详情</el-button>--><!--</template>-->
+      <!--</el-table-column>-->
+    </el-table>
   </PageHeaderLayout>
 </template>
 
@@ -49,8 +47,8 @@ export default {
   mixins: [resize],
   data() {
     return {
-      list: null,
-      listLoading: true,
+      list: [],
+      listLoading: false,
       chart: null
     }
   },
@@ -61,7 +59,7 @@ export default {
     ])
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
   },
   mounted() {
     this.initChart()

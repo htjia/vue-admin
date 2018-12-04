@@ -1,4 +1,5 @@
 <template>
+  <!--<el-scrollbar class="scrollbar-wrapper">-->
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
       <!-- or name="fade" -->
@@ -6,6 +7,7 @@
       <router-view :key="activeKey"/>
     </transition>
   </section>
+  <!--</el-scrollbar>-->
 </template>
 
 <script>
@@ -32,11 +34,12 @@ export default {
 <style scoped>
 .app-main {
   /*50 = navbar  */
-  /*min-height: calc(100vh - 105px);*/
+  height: calc(100vh - 106px);
   flex-grow: 1;
   position: relative;
   overflow: auto;
   background: #E5E5E5;
   padding: 10px;
+
 }
 </style>

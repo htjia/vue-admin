@@ -73,8 +73,7 @@ export default {
   fill: #009688;;
   width: 20px;
   height: 20px;
-  vertical-align: 10px;
+  vertical-align: -5px;
   color: #009688;
-  vertical-align: sub;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <PageHeaderLayout>
     <div>
-      <el-input v-model="filterText" placeholder="请输入工厂名称" class="searchInput" />
+      <el-input v-model="filterText" placeholder="请输入工厂名称" prefix-icon="el-icon-search" class="searchInput" clearable/>
       <el-button
         class="float-right-btn"
         type="primary"

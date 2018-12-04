@@ -6,13 +6,25 @@
     position: relative;
     display: flex;
     flex-direction:column;
-    height: calc(100vh - 106px);
+    height: 100%;
+    //.scrollbar-wrapper{
+    //  height:calc(100vh - 106px);
+    //}
+    //.is-horizontal {
+    //  display: none;
+    //}
+    //.scrollbar-wrapper {
+    //  overflow-x: hidden!important;
+    //  .el-scrollbar__view {
+    //    height: 100%;
+    //  }
+    //}
   }
   // 侧边栏
   .sidebar-container {
     transition: width 0.28s;
     width: 220px !important;
-    height: 100%;
+    height: calc(100vh - 60px);
     position: fixed;
     font-size: 0px;
     top: 60px;
@@ -99,6 +111,7 @@
   }
   .el-menu-item.is-active{
     border-color:#009688;
+    background-color: #292d35 !important;
   }
   .sidebar-container .nest-menu .el-submenu>.el-submenu__title,
   .sidebar-container .el-submenu .el-menu-item {

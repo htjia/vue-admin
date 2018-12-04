@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询
 export function tokenList(params) {
   return request({
-    url: '/ApiToken/list',
+    url: `/ApiToken/${params.pageNum}/${params.pageSize}/list`,
     method: 'get',
     params
   })
@@ -21,16 +21,15 @@ export function add(params) {
 // 删除
 export function remove(params) {
   return request({
-    url: '/ApiToken/apiToken/delete',
-    method: 'delete',
-    params
+    url: `/ApiToken/${params.id}`,
+    method: 'delete'
   })
 }
 
 // 修改
 export function update(params) {
   return request({
-    url: '/ApiToken/apiToken/update',
+    url: '/ApiToken/update',
     method: 'put',
     params
   })

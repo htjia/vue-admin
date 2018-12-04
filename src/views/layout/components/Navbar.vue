@@ -54,6 +54,7 @@ export default {
     padding: 0 10px;
   }
   .screenfull {
+    font-size: 14px;
     display: inline-block;
   }
   .avatar-container {
@@ -64,6 +65,7 @@ export default {
     .refresh{
       margin-left: 15px;
       cursor: pointer;
+      font-size: 14px;
       .el-icon-refresh{
         font-size: 23px;
         vertical-align: middle;

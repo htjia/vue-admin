@@ -1,7 +1,9 @@
 import PageHeaderLayout from '@/components/PageHeaderLayout'
+import HeaderSearchAdd from '@/components/HeaderSearchAdd'
+import { asyncRouterMap } from '@/router'
 import { roles, add, remove } from '@/api/roles'
 export default {
-  components: { PageHeaderLayout },
+  components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
     const validateName = (rule, value, callback) => {
       if (value === '') {
@@ -26,12 +28,18 @@ export default {
       }
     }
     return {
+      routers: [],
+      routerValues: [],
+      checkAll: false,
+      checkedRouters: ['department', 'departmentDetail'],
+      isIndeterminate: true,
       listLoading: false,
       addDialogVisible: false,
       editDialogVisible: false,
+      permissionVisible: false,
       list: [],
       searchkey: '',
-      pageSize: 10,
+      pageSize: 15,
       pageNum: 1,
       totalPage: 0,
       name: '',
@@ -51,7 +59,7 @@ export default {
   created() {
     const params = {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 15,
       searchkey: ''
     }
     this.fetchData(params)
@@ -59,6 +67,15 @@ export default {
   mounted() {
   },
   methods: {
+    handleCheckAllChange(val) {
+      this.checkedRouters = val ? this.routerValues : []
+      this.isIndeterminate = false
+    },
+    handleCheckedRoutersChange(value) {
+      const checkedCount = value.length
+      this.checkAll = checkedCount === this.routers.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.routers.length
+    },
     // 每页数量改变
     sizeChange(pageSize) {
       const params = {
@@ -77,6 +94,14 @@ export default {
       this.pageNum = pageNum
       this.fetchData(params)
     },
+    handleSearch(data) {
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+        searchkey: data
+      }
+      this.fetchData(params)
+    },
     // 查询
     fetchData(params) {
       this.listLoading = true
@@ -90,11 +115,6 @@ export default {
           this.list = res.data.list
           this.totalPage = parseInt(res.data.total)
           this.listLoading = false
-        } else {
-          this.$message({
-            type: 'warning',
-            message: res.message
-          })
         }
       })
     },
@@ -124,11 +144,6 @@ export default {
               })
               this.addDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {
@@ -154,11 +169,6 @@ export default {
               })
               this.editDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {
@@ -171,6 +181,7 @@ export default {
     resetForm(formName) {
       this.editDialogVisible = false
       this.addDialogVisible = false
+      this.permissionVisible = false
       this.$refs[formName].resetFields()
     },
     // 编辑
@@ -195,11 +206,6 @@ export default {
             })
             this.editDialogVisible = false
             this.fetchData()
-          } else {
-            this.$message({
-              type: 'warning',
-              message: res.message
-            })
           }
         })
       }).catch(() => {
@@ -207,7 +213,22 @@ export default {
     },
     // 配置权限
     handPermission() {
-      console.log('权限配置')
+      console.log(asyncRouterMap)
+      const RouterMap = []
+      asyncRouterMap.pop()
+      for (const item of asyncRouterMap) {
+        RouterMap.push({
+          name: item.children[0].meta.title,
+          value: item.path.substr(1)
+        })
+        this.routerValues.push(item.path.substr(1))
+      }
+      this.permissionVisible = true
+      this.routers = RouterMap
+    },
+    // 权限配置提交
+    submitPermissionForm() {
+      console.log(this.checkedRouters)
     }
   }
 }

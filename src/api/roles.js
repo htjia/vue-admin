@@ -30,7 +30,7 @@ export function update(params) {
 // 删除
 export function remove(params) {
   return request({
-    url: `/role/delete/${params}`,
+    url: `/role/${params}/delete`,
     method: 'delete'
   })
 }

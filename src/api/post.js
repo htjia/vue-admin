@@ -21,8 +21,8 @@ export function add(params) {
 // 删除
 export function remove(params) {
   return request({
-    url: '/station/delete',
-    method: 'post',
+    url: `/station/${params.id}/delete`,
+    method: 'delete',
     params
   })
 }

@@ -1,12 +1,7 @@
 <template>
-  <PageHeaderLayout >
-    <div class="">
-      <el-button
-        class="float-right-btn"
-        size="medium"
-        type="primary"
-        icon="el-icon-plus"
-        @click="handleAdd">添加</el-button>
+  <PageHeaderLayout>
+    <HeaderSearchAdd placeholder-text = "请输入岗位名称" @handleSearch="handleSearch" @handleAdd="handleAdd"/>
+    <div class="app-container">
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -17,7 +12,7 @@
         highlight-current-row>
         <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope">
-            {{ scope.$index }}
+            {{ scope.$index+1 }}
           </template>
         </el-table-column>
         <el-table-column label="岗位名称" align="center">
@@ -29,54 +24,60 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.row)">编辑</el-button>
+              icon="el-icon-edit"
+              @click="handleEdit(scope.row)">编辑
+            </el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.row)">删除</el-button>
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)">删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-        v-if="totalPage>pageSize"
+        v-if="totalPage>15"
         :current-page="pageNum"
-        :page-sizes="[10, 20, 30, 40]"
+        :page-sizes="[15, 30, 40]"
         :page-size="pageSize"
         :total="totalPage"
-        layout="prev, pager, next"
+        class="pagination"
+        layout="total, sizes, prev, pager, next, jumper"
         @size-change="sizeChange"
-        @current-change="currentChange"/>
-      <el-dialog
-        :visible.sync="addDialogVisible"
-        :before-close="handleClose"
-        title="添加"
-        width="500px">
-        <el-form ref="postForm" :model="postForm" :rules="rules" status-icon label-width="80px" label-position="left">
-          <el-form-item label="岗位名称" prop="postName">
-            <el-input v-model="postForm.postName" type="text"/>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="resetForm('postForm')">取 消</el-button>
-          <el-button type="primary" @click="submitForm('postForm')">确 定</el-button>
-        </span>
-      </el-dialog>
-      <el-dialog
-        :visible.sync="editDialogVisible"
-        :before-close="handleClose"
-        title="编辑"
-        width="500px">
-        <el-form ref="postForm" :model="postForm" :rules="rules" status-icon label-width="80px" label-position="left">
-          <el-form-item label="岗位名称" prop="postName">
-            <el-input v-model="postForm.postName" type="text"/>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="resetForm('postForm')">取 消</el-button>
-          <el-button type="primary" @click="submitEditForm('postForm')">确 定</el-button>
-        </span>
-      </el-dialog>
+        @current-change="currentChange"
+      />
     </div>
+    <el-dialog
+      :visible.sync="addDialogVisible"
+      :before-close="handleClose"
+      title="添加"
+      width="500px">
+      <el-form ref="postForm" :model="postForm" :rules="rules" status-icon label-width="80px" label-position="left">
+        <el-form-item label="岗位名称" prop="postName">
+          <el-input v-model="postForm.postName" type="text"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetForm('postForm')">取 消</el-button>
+        <el-button type="primary" @click="submitForm('postForm')">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="editDialogVisible"
+      :before-close="handleClose"
+      title="编辑"
+      width="500px">
+      <el-form ref="postForm" :model="postForm" :rules="rules" status-icon label-width="80px" label-position="left">
+        <el-form-item label="岗位名称" prop="postName">
+          <el-input v-model="postForm.postName" type="text"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetForm('postForm')">取 消</el-button>
+        <el-button type="primary" @click="submitEditForm('postForm')">确 定</el-button>
+      </span>
+    </el-dialog>
   </PageHeaderLayout>
 </template>
 <script src="./post.js"></script>

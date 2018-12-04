@@ -85,11 +85,6 @@ export default {
               message: '删除成功!'
             })
             this.fetchData()
-          } else {
-            this.$message({
-              type: 'warning',
-              message: res.message
-            })
           }
         })
       }).catch(() => {

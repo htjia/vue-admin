@@ -1,59 +1,42 @@
 <template>
   <PageHeaderLayout>
-    <div>
-      <el-input v-model="filterText" placeholder="请输入组织机构名称" class="searchInput" />
-      <el-button
-        class="float-right-btn"
-        type="primary"
-        icon="el-icon-plus"
-        @click="handleAdd">添加</el-button>
-      <el-tree
-        ref="tree2"
-        :expand-on-click-node="false"
+    <HeaderSearchAdd placeholder-text = "请输入组织机构名称" @handleSearch="handleSearch" @handleAdd="handleAdd"/>
+    <div class="app-container">
+      <tree-table
         :data="list"
-        :props="defaultProps"
-        :filter-node-method="filterNode"
-        class="filter-tree"
-        node-key="id"
-        style="height: calc(100vh - 176px);background: #fff;overflow: auto"
-        default-expand-all>
-        <span slot-scope="{ node, data }" class="custom-tree-node">
-          <span>{{ node.label }}</span>
-          <span>
+        :eval-func="func"
+        :eval-args="args"
+        :expand-all="expandAll"
+        border>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
             <el-button
-              type="text"
               size="mini"
-              @click="append(data)">
-              添加
-            </el-button>
+              icon="el-icon-plus"
+              @click="append(scope.row)">添加</el-button>
             <el-button
-              type="text"
               size="mini"
-              @click="edit(data)">
-              编辑
-            </el-button>
+              icon="el-icon-edit"
+              @click="edit(scope.row)">编辑</el-button>
             <el-button
-              type="text"
               size="mini"
-              @click="remove(data)">
-              删除
-            </el-button>
+              icon="el-icon-view"
+              @click="viewDetail(scope.row)">查看详情</el-button>
             <el-button
-              type="text"
               size="mini"
-              @click="viewDetail(data)">
-              查看详情
-            </el-button>
-          </span>
-        </span>
-      </el-tree>
+              type="danger"
+              icon="el-icon-delete"
+              @click="remove(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </tree-table>
     </div>
     <el-dialog
       :visible.sync="dialogVisible"
       :before-close="handleClose"
       title="添加"
       width="500px">
-      <el-form ref="nodeForm" :model="nodeForm" :rules="rules" status-icon label-width="60px">
+      <el-form ref="nodeForm" :model="nodeForm" :rules="rules" status-icon label-width="60px" label-position="left">
         <el-form-item label="名称" prop="nodeName">
           <el-input v-model="nodeForm.nodeName" type="text"/>
         </el-form-item>
@@ -68,7 +51,7 @@
       :before-close="handleClose"
       title="编辑"
       width="500px">
-      <el-form ref="nodeForm" :model="nodeForm" :rules="rules" status-icon label-width="60px">
+      <el-form ref="nodeForm" :model="nodeForm" :rules="rules" status-icon label-width="60px" label-position="left">
         <el-form-item label="名称" prop="nodeName">
           <el-input v-model="nodeForm.nodeName" type="text"/>
         </el-form-item>
@@ -83,16 +66,12 @@
 <script src="./department.js"></script>
 <style>
   .custom-tree-node {
-    flex: .3;
+    flex: .4;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 14px;
     padding-right: 20px;
-  }
-  .searchInput{
-    width: 300px;
-    margin-bottom: 10px;
   }
 </style>
 

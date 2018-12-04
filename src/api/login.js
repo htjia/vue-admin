@@ -3,19 +3,18 @@ import request from '@/utils/request'
 export function login(username, password) {
   return request({
     url: '/user/login',
-    method: 'get',
+    method: 'post',
     params: {
-      name: username,
-      pwd: password
+      username,
+      password
     }
   })
 }
 
-export function getInfo(token) {
+export function getInfo(userId) {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: `/user/${userId}/detail`,
+    method: 'get'
   })
 }
 

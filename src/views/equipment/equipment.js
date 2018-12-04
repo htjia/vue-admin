@@ -1,7 +1,8 @@
 import PageHeaderLayout from '@/components/PageHeaderLayout'
-import { getList, add, remove, update } from '@/api/facility'
+import HeaderSearchAdd from '@/components/HeaderSearchAdd'
+import { getList, add, remove, update } from '@/api/equipment'
 export default {
-  components: { PageHeaderLayout },
+  components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
     const validateName = (rule, value, callback) => {
       if (value === '') {
@@ -40,10 +41,11 @@ export default {
       addDialogVisible: false,
       editDialogVisible: false,
       list: [],
+      searchkey: '',
       currentId: '',
       totalPage: 0,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 15,
       facilityForm: {
         facilityName: '',
         ip: '',
@@ -62,7 +64,7 @@ export default {
   created() {
     const params = {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 15,
       searchkey: ''
     }
     this.fetchData(params)
@@ -88,6 +90,14 @@ export default {
       this.pageNum = pageNum
       this.fetchData(params)
     },
+    handleSearch(data) {
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+        searchkey: data
+      }
+      this.fetchData(params)
+    },
     // 查询
     fetchData(params) {
       this.listLoading = true
@@ -101,17 +111,15 @@ export default {
           this.list = res.data.list
           this.totalPage = parseInt(res.data.total)
           this.listLoading = false
-        } else {
-          this.$message({
-            type: 'warning',
-            message: res.message
-          })
         }
       })
     },
     // 添加
     handleAdd() {
-      // this.facilityForm.facilityName = ''
+      this.facilityForm.facilityName = ''
+      this.facilityForm.ip = ''
+      this.facilityForm.port = ''
+      this.facilityForm.factoryCode = ''
       this.addDialogVisible = true
     },
     // 编辑
@@ -141,11 +149,6 @@ export default {
             })
             this.editDialogVisible = false
             this.fetchData()
-          } else {
-            this.$message({
-              type: 'warning',
-              message: res.message
-            })
           }
         })
       }).catch(() => {
@@ -162,8 +165,8 @@ export default {
           const params = {
             name: this.facilityForm.facilityName,
             factorycode: '001',
-            toIP: '192.168.2.54',
-            toport: '80'
+            toIP: this.facilityForm.ip,
+            toport: this.facilityForm.port
           }
           add(params).then(res => {
             if (res.code === 0) {
@@ -173,11 +176,6 @@ export default {
               })
               this.addDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {
@@ -193,7 +191,7 @@ export default {
           const params = {
             id: this.currentId,
             name: this.facilityForm.facilityName,
-            factorycode: this.facilityForm.factoryCode,
+            factorycode: '001',
             toIP: this.facilityForm.ip,
             toport: this.facilityForm.port
           }
@@ -205,11 +203,6 @@ export default {
               })
               this.editDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {

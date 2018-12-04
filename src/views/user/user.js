@@ -1,12 +1,12 @@
 
 import PageHeaderLayout from '@/components/PageHeaderLayout'
-import { getList, add, update, remove, updatePwd, configInfo } from '@/api/user'
+import HeaderSearchAdd from '@/components/HeaderSearchAdd'
+import { getList, add, update, remove, updatePwd, configInfo, saveUserDetail } from '@/api/user'
 import { deptList } from '@/api/department'
 import { postList } from '@/api/post'
 import { roles } from '@/api/roles'
-import axios from 'axios'
 export default {
-  components: { PageHeaderLayout },
+  components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
     const validateName = (rule, value, callback) => {
       if (value === '') {
@@ -23,8 +23,10 @@ export default {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
-        if (value.length > 6) {
-          callback(new Error('不能大于6位'))
+        if (value.length < 6) {
+          callback(new Error('密码不能小于 6 位'))
+        } else if (value.length > 16) {
+          callback(new Error('密码不能大于 16 位'))
         } else {
           callback()
         }
@@ -76,7 +78,7 @@ export default {
       },
       treeData: [],
       searchkey: '',
-      pageSize: 10,
+      pageSize: 15,
       pageNum: 1,
       totalPage: 0,
       name: '',
@@ -114,7 +116,7 @@ export default {
   created() {
     const params = {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 15,
       searchkey: ''
     }
     this.fetchData(params)
@@ -187,6 +189,14 @@ export default {
         pageNum
       }
       this.pageNum = pageNum
+      this.fetchData(params)
+    },
+    handleSearch(data) {
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+        searchkey: data
+      }
       this.fetchData(params)
     },
     // 查询
@@ -295,11 +305,6 @@ export default {
               })
               this.updatePwdDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {
@@ -340,20 +345,16 @@ export default {
               username: this.username
             }
           }
-          axios.post(`${process.env.BASE_API}/user/SaveUserDetail`, params, { headers: { 'Content-Type': 'application/json' }})
-            .then(res => {
-              if (res.data.code === 0) {
-                this.$message({
-                  type: 'success',
-                  message: '配置成功!'
-                })
-                this.configDialogVisible = false
-                this.fetchData()
-              }
-            })
-            .catch(err => {
-              console.log(err)
-            })
+          saveUserDetail(params).then(res => {
+            if (res.code === 0) {
+              this.$message({
+                type: 'success',
+                message: '配置成功!'
+              })
+              this.configDialogVisible = false
+              this.fetchData()
+            }
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -389,11 +390,6 @@ export default {
             })
             this.editDialogVisible = false
             this.fetchData()
-          } else {
-            this.$message({
-              type: 'warning',
-              message: res.message
-            })
           }
         })
       }).catch(() => {
@@ -431,11 +427,6 @@ export default {
           this.configForm.post = post
           this.configForm.role = role
           this.$refs.tree.setCheckedKeys(dept)
-        } else {
-          this.$message({
-            type: 'warning',
-            message: res.message
-          })
         }
       })
     }

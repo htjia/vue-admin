@@ -72,20 +72,102 @@ a:hover {
 .app-main{
   min-height: 100%
 }
-
-.app-container {
-  padding: 20px;
+// 页首模块
+.header-search-add{
+  height: 70px;
+  background: #fff;
+  margin-bottom: 10px;
+  padding:15px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+  .search-title{
+    font-size: 14px;
+    color:#747474
+  }
+  .has-margin{
+    margin-left: 20px;
+  }
+}
+.searchInput{
+  width: 400px;
+  margin-bottom: 10px;
 }
 .float-right-btn{
   float: right;
+}
+// 内容模块
+.app-container {
+  padding: 15px;
+  height: calc(100vh - 206px);
+  background: #fff;
+  overflow: auto;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+}
+.module-container{
+  background: #fff;
+  overflow: auto;
   margin-bottom: 10px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 5px;
 }
-.el-button--primary{
-  background: #009688;
-  border-color: #029691;
+.module-container:last-child{
+  margin-bottom: 0;
 }
-.el-button--primary:hover,
-.el-button--primary:focus{
-  background: #029691;
-  border-color: #029691;
+// 模块标题
+.module-title{
+  border-bottom:1px solid #d7d7d7;
+  padding:20px 15px 10px 15px;
+  color:#009688;
+  font-weight: bold;
 }
+// 模块内容
+.module-content{
+  position: relative;
+  padding: 15px;
+  overflow: hidden;
+}
+.direction-btn{
+  position: absolute;
+  bottom:10px;
+  left:50%;
+  cursor: pointer;
+}
+.module-content-left{
+  float: left;
+  width: 40%;
+  height: 253px;
+  border:1px solid #ebeef5;
+}
+.module-content-right{
+  padding-left: 15px;
+  float: left;
+  width: 60%;
+}
+// 分页
+.pagination {
+  float: right;
+  margin-top: 15px;
+}
+*::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 5px;
+  -webkit-appearance: none;
+}
+*::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  //border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: #ddd;
+}
+*::-webkit-scrollbar-thumb:hover{
+  background: #c2c2c2;
+}
+*::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  //-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 0px;
+  background: #EDEDED;
+}
+

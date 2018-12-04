@@ -28,12 +28,9 @@ import Layout from '../views/layout/Layout'
   }
 **/
 
-// ]
-// export const asyncRouterMap = [
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
   {
     path: '/',
     component: Layout,
@@ -44,30 +41,9 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
-  // {
-  //   path: '/factory',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Factory',
-  //       component: () => import('@/views/factory/index'),
-  //       meta: { title: '工厂信息', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/factoryDetail',
-  //   component: Layout,
-  //   hidden: true,
-  //   children: [{
-  //     path: 'index',
-  //     name: 'FactoryDetail',
-  //     component: () => import('@/views/factoryDetail/index'),
-  //     meta: { title: '工厂详情', icon: 'table' }
-  //   }]
-  // },
+  }
+]
+export const asyncRouterMap = [
   {
     path: '/department',
     component: Layout,
@@ -99,7 +75,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'Post',
         component: () => import('@/views/post/index'),
-        meta: { title: '岗位', icon: 'tree' }
+        meta: { title: '岗位管理', icon: 'tree' }
       }
     ]
   },
@@ -111,7 +87,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'Roles',
         component: () => import('@/views/roles/index'),
-        meta: { title: '角色', icon: 'tree' }
+        meta: { title: '角色管理', icon: 'tree' }
       }
     ]
   },
@@ -142,13 +118,13 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/facility',
+    path: '/equipment',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'Facility',
-        component: () => import('@/views/facility/index'),
+        name: 'Equipment',
+        component: () => import('@/views/equipment/index'),
         meta: { title: '设备管理', icon: 'tree' }
       }
     ]
@@ -165,6 +141,89 @@ export const constantRouterMap = [
       }
     ]
   },
+  {
+    path: '/uploadLog',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'UploadLog',
+        component: () => import('@/views/uploadLog/index'),
+        meta: { title: '日志管理', icon: 'log' }
+      }
+    ]
+  },
+  {
+    path: '/equipmentRecommend',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'EquipmentRecommend',
+        component: () => import('@/views/equipmentRecommend/index'),
+        meta: { title: '设备推荐', icon: 'log' }
+      }
+    ]
+  },
+  {
+    path: '/equipmentDetail',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'EquipmentDetail',
+        component: () => import('@/views/equipmentDetail/index'),
+        meta: { title: '设备详情', icon: 'log' }
+      }
+    ]
+  },
+  {
+    path: '/parameterRecommend',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'ParameterRecommend',
+        component: () => import('@/views/parameterRecommend/index'),
+        meta: { title: '参数推荐', icon: 'log' }
+      }
+    ]
+  },
+  {
+    path: '/externalLink',
+    component: Layout,
+    meta: { roles: ['editor'] },
+    children: [
+      {
+        path: 'http://192.168.2.161/ganglia2/',
+        meta: { title: '大数据管理中心', icon: 'link', roles: ['editor'] }
+      }
+    ]
+  },
+  { path: '*', redirect: '/404', hidden: true },
+  // {
+  //   path: '/factory',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Factory',
+  //       component: () => import('@/views/factory/index'),
+  //       meta: { title: '工厂信息', icon: 'tree' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/factoryDetail',
+  //   component: Layout,
+  //   hidden: true,
+  //   children: [{
+  //     path: 'index',
+  //     name: 'FactoryDetail',
+  //     component: () => import('@/views/factoryDetail/index'),
+  //     meta: { title: '工厂详情', icon: 'table' }
+  //   }]
+  // },
   // {
   //   path: '/targetChart',
   //   component: Layout,
@@ -177,126 +236,64 @@ export const constantRouterMap = [
   //     }
   //   ]
   // },
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: '案例', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: '表格', icon: 'table' }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: 'Form表单', icon: 'form' }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'Nested',
-  //   alwaysShow: true,
-  //   meta: {
-  //     title: '嵌套路由',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: 'menu1' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: 'menu1-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2'),
-  //           name: 'Menu1-2',
-  //           meta: { title: 'menu1-2' },
-  //           children: [
-  //             {
-  //               path: 'menu1-2-1',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //               name: 'Menu1-2-1',
-  //               meta: { title: 'menu1-2-1' }
-  //             },
-  //             {
-  //               path: 'menu1-2-2',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-  //               name: 'Menu1-2-2',
-  //               meta: { title: 'menu1-2-2' }
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           path: 'menu1-3',
-  //           component: () => import('@/views/nested/menu1/menu1-3'),
-  //           name: 'Menu1-3',
-  //           meta: { title: 'menu1-3' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu2',
-  //       component: () => import('@/views/nested/menu2/index'),
-  //       meta: { title: 'menu2' }
-  //     }
-  //   ]
-  // },
-  //
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: '外部链接', icon: 'link' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   component: Layout,
-  //   path: '/component',
-  //   redirect: '/component/drag',
-  //   name: 'Component',
-  //   meta: { title: '组建', icon: 'component' },
-  //   children: [
-  //     {
-  //       path: 'drag',
-  //       name: 'Drag',
-  //       component: () => import('@/views/drag/index'),
-  //       meta: { title: '拖拽 Dialog' }
-  //     },
-  //     {
-  //       path: 'dragList',
-  //       name: 'DragList',
-  //       component: () => import('@/views/dragList/index'),
-  //       meta: { title: '列表拖拽' }
-  //     }
-  //   ]
-  // },
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '/nested',
+    component: Layout,
+    redirect: '/nested/menu1',
+    name: 'Nested',
+    alwaysShow: true,
+    meta: {
+      title: '嵌套路由',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'menu1',
+        component: () => import('@/views/nested/menu1/index'), // Parent router-view
+        name: 'Menu1',
+        meta: { title: 'menu1' },
+        children: [
+          {
+            path: 'menu1-1',
+            component: () => import('@/views/nested/menu1/menu1-1'),
+            name: 'Menu1-1',
+            meta: { title: 'menu1-1' }
+          },
+          {
+            path: 'menu1-2',
+            component: () => import('@/views/nested/menu1/menu1-2'),
+            name: 'Menu1-2',
+            meta: { title: 'menu1-2' },
+            children: [
+              {
+                path: 'menu1-2-1',
+                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
+                name: 'Menu1-2-1',
+                meta: { title: 'menu1-2-1' }
+              },
+              {
+                path: 'menu1-2-2',
+                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
+                name: 'Menu1-2-2',
+                meta: { title: 'menu1-2-2' }
+              }
+            ]
+          },
+          {
+            path: 'menu1-3',
+            component: () => import('@/views/nested/menu1/menu1-3'),
+            name: 'Menu1-3',
+            meta: { title: 'menu1-3' }
+          }
+        ]
+      },
+      {
+        path: 'menu2',
+        component: () => import('@/views/nested/menu2/index'),
+        meta: { title: 'menu2' }
+      }
+    ]
+  },
 ]
 
 export default new Router({

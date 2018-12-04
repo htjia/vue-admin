@@ -1,7 +1,10 @@
 import PageHeaderLayout from '@/components/PageHeaderLayout'
+import HeaderSearchAdd from '@/components/HeaderSearchAdd'
+import TreeTable from '@/components/TreeTable'
+import treeToArray from './customEval'
 import { deptList, add, remove, update } from '@/api/department'
 export default {
-  components: { PageHeaderLayout },
+  components: { PageHeaderLayout, HeaderSearchAdd, TreeTable },
   data() {
     const validateNodeName = (rule, value, callback) => {
       if (value === '') {
@@ -15,14 +18,57 @@ export default {
       }
     }
     return {
+      func: treeToArray,
+      expandAll: false,
       dialogVisible: false,
       editDialogVisible: false,
       detailDialogVisible: false,
       filterText: '',
+      searchKey: '',
       currentNode: '',
-      list: [],
+      list: {
+        id: 1,
+        event: '事件1',
+        timeLine: 100,
+        comment: '无',
+        child: [
+          {
+            id: 2,
+            event: '事件2',
+            timeLine: 10,
+            comment: '无'
+          },
+          {
+            id: 3,
+            event: '事件3',
+            timeLine: 90,
+            comment: '无',
+            child: [
+              {
+                id: 4,
+                event: '事件4',
+                timeLine: 5,
+                comment: '无'
+              },
+              {
+                id: 5,
+                event: '事件5',
+                timeLine: 10,
+                comment: '无'
+              },
+              {
+                id: 6,
+                event: '事件6',
+                timeLine: 75,
+                comment: '无'
+              }
+            ]
+          }
+        ]
+      },
+      args: [null, null, 'timeLine'],
       defaultProps: {
-        children: 'child',
+        child: 'child',
         label: 'label'
       },
       nodeForm: {
@@ -34,9 +80,9 @@ export default {
     }
   },
   watch: {
-    filterText(val) {
-      this.$refs.tree2.filter(val)
-    }
+    // filterText(val) {
+    //   this.$refs.deptTree.filter(val)
+    // }
   },
   created() {
   },
@@ -44,21 +90,29 @@ export default {
     this.fetchData()
   },
   methods: {
-    fetchData() {
-      const params = {
-        // code: '',
-        // name: ''
+    message(row) {
+      console.log(row)
+    },
+    fetchData(params) {
+      const requestParams = params || {
       }
-      deptList(params).then(res => {
+      deptList(requestParams).then(res => {
         if (res.code === 0) {
-          this.list = res.data.child
-        } else {
-          this.$message({
-            type: 'warning',
-            message: res.message
-          })
+          if (res.data.child === undefined) {
+            res.data[0].id = res.data[0].code
+            res.data[0]['label'] = res.data[0].deptName
+            this.list = res.data
+          } else {
+            this.list = res.data.child
+          }
         }
       })
+    },
+    handleSearch(data) {
+      const params = {
+        name: data
+      }
+      this.fetchData(params)
     },
     // 搜索
     filterNode(value, data) {
@@ -79,13 +133,19 @@ export default {
     // 添加fun
     addNode(id, name) {
       add(id, name).then(res => {
-        this.fetchData()
+        if (res.code === 0) {
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          })
+          this.fetchData()
+        }
       })
     },
     // 删除
     remove(data) {
       console.log(data.id)
-      this.$confirm('此操作将永久删除该工厂, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该组织机构, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -117,7 +177,13 @@ export default {
     // 编辑 fun
     editNode(data, name) {
       update(data.mainId, name).then(res => {
-        this.fetchData()
+        if (res.code === 0) {
+          this.$message({
+            type: 'success',
+            message: '编辑成功!'
+          })
+          this.fetchData()
+        }
       })
     },
     // 查看详情

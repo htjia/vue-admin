@@ -35,8 +35,8 @@ export function update(id, deptName) {
 // 删除
 export function remove(code) {
   return request({
-    url: '/department/delete',
-    method: 'post',
+    url: `/department/${code}/delete`,
+    method: 'delete',
     params: {
       code
     }

@@ -1,13 +1,16 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">云科大数据实验平台</h3>
+      <div class="login-title-logo"/>
+      <div class="cut-line"/>
+      <div class="input-label user-name">用户名：</div>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="username" />
+        <el-input v-model="loginForm.username" size="mini" name="username" type="text" auto-complete="on" placeholder="请输入用户名" />
       </el-form-item>
+      <div class="input-label">密码：</div>
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
@@ -15,15 +18,16 @@
         <el-input
           :type="pwdType"
           v-model="loginForm.password"
+          size="mini"
           name="password"
           auto-complete="on"
-          placeholder="password"
+          placeholder="请输入密码"
           @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="login-btn">
         <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           登录
         </el-button>
@@ -33,29 +37,35 @@
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
+// import { isvalidUsername } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
+      if (!value) {
+        callback(new Error('请输入用户名'))
       } else {
         callback()
       }
     }
     const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error('密码不能小于5位'))
+      if (!value) {
+        callback(new Error('请输入密码'))
       } else {
-        callback()
+        if (value.length < 6) {
+          callback(new Error('不能小于 6 位'))
+        } else if (value.length > 16) {
+          callback(new Error('不能大于 16 位'))
+        } else {
+          callback()
+        }
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -89,8 +99,12 @@ export default {
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
+          }).catch((msg) => {
             this.loading = false
+            this.$message({
+              type: 'warning',
+              message: msg
+            })
           })
         } else {
           console.log('error submit!!')
@@ -103,34 +117,45 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-$bg:#2d3a4b;
-$light_gray:#eee;
+$bg:#fff;
+$light_gray:#494949;
 
 /* reset element-ui css */
 .login-container {
   .el-input {
     display: inline-block;
-    height: 47px;
+    height: 40px;
     width: 85%;
     input {
-      background: transparent;
+      background: #fff;
       border: 0px;
       -webkit-appearance: none;
       border-radius: 0px;
-      padding: 12px 5px 12px 15px;
+      padding: 8px 5px 8px 15px;
       color: $light_gray;
-      height: 47px;
+      height: 40px;
       &:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: #fff !important;
+        -webkit-text-fill-color: #494949 !important;
       }
     }
   }
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid #707070;
+    background: #fff;
     border-radius: 5px;
     color: #454545;
+  }
+  .el-form-item.login-btn{
+    border: 1px solid #009688;
+    margin-bottom: 40px;
+  }
+  .input-label{
+    margin-bottom: 15px;
+  }
+  .cut-line{
+    border-top: 1px solid #ddd;
+    margin-bottom: 20px;
   }
 }
 
@@ -139,20 +164,36 @@ $light_gray:#eee;
 <style rel="stylesheet/scss" lang="scss" scoped>
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
-$light_gray:#eee;
+$light_gray:#444;
 .login-container {
   position: fixed;
   height: 100%;
   width: 100%;
   background-color: $bg;
+  background-image: url("../../../static/img/login.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   .login-form {
     position: absolute;
-    left: 0;
-    right: 0;
-    width: 520px;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width: 460px;
     max-width: 100%;
-    padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    padding: 35px 60px 15px;
+    margin: 0 auto;
+    margin-bottom: 50%;
+    background-color: #fff;
+    border-radius: 10px;
+    .login-title-logo{
+      height: 106px;
+      width: 315px;
+      background-image: url("../../../static/img/logo-name.png");
+      background-repeat: no-repeat;
+      margin: 0 auto;
+      margin-bottom: 15px;
+    }
   }
   .tips {
     font-size: 14px;
@@ -165,18 +206,17 @@ $light_gray:#eee;
     }
   }
   .svg-container {
-    padding: 6px 5px 6px 15px;
+    padding: 0px 5px 0px 15px;
     color: $dark_gray;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
     &_login {
-      font-size: 20px;
+      font-size: 18px;
     }
   }
   .title {
     font-size: 26px;
-    font-weight: 400;
     color: $light_gray;
     margin: 0px auto 40px auto;
     text-align: center;
@@ -185,7 +225,7 @@ $light_gray:#eee;
   .show-pwd {
     position: absolute;
     right: 10px;
-    top: 7px;
+    top: 3px;
     font-size: 16px;
     color: $dark_gray;
     cursor: pointer;

@@ -30,7 +30,7 @@ export function update(params) {
 // 删除用户
 export function remove(params) {
   return request({
-    url: `/user/delete/${params}`,
+    url: `/user/${params}/delete`,
     method: 'delete'
   })
 }
@@ -49,5 +49,14 @@ export function configInfo(id) {
   return request({
     url: `/user/${id}/detail`,
     method: 'get'
+  })
+}
+
+// 配置ing
+export function saveUserDetail(params) {
+  return request({
+    url: '/user/SaveUserDetail',
+    method: 'post',
+    data: params
   })
 }

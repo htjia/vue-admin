@@ -1,14 +1,15 @@
 import PageHeaderLayout from '@/components/PageHeaderLayout'
+import HeaderSearchAdd from '@/components/HeaderSearchAdd'
 import { tokenList, add, remove, update } from '@/api/apiToken'
 export default {
-  components: { PageHeaderLayout },
+  components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
     return {
       listLoading: false,
       addDialogVisible: false,
       editDialogVisible: false,
       list: [],
-      pageSize: 10,
+      pageSize: 15,
       pageNum: 1,
       searchkey: '',
       totalPage: 0,
@@ -30,7 +31,7 @@ export default {
   created() {
     const params = {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 15,
       searchkey: ''
     }
     this.fetchData(params)
@@ -56,6 +57,14 @@ export default {
       this.pageNum = pageNum
       this.fetchData(params)
     },
+    handleSearch(data) {
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+        searchkey: data
+      }
+      this.fetchData(params)
+    },
     // 查询
     fetchData(params) {
       this.listLoading = true
@@ -69,11 +78,6 @@ export default {
           this.list = res.data.list
           this.totalPage = parseInt(res.data.total)
           this.listLoading = false
-        } else {
-          this.$message({
-            type: 'warning',
-            message: res.message
-          })
         }
       })
     },
@@ -105,11 +109,6 @@ export default {
               })
               this.addDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {
@@ -136,11 +135,6 @@ export default {
               })
               this.editDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {
@@ -181,11 +175,6 @@ export default {
             })
             this.editDialogVisible = false
             this.fetchData()
-          } else {
-            this.$message({
-              type: 'warning',
-              message: res.message
-            })
           }
         })
       }).catch(() => {

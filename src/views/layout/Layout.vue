@@ -4,7 +4,7 @@
       <div class="header-bar">
         <img class="logo-img" src="../../../static/img/sys_logo.png" alt="">
         <div class="header-info" >
-          <span><svg-icon icon-class="user"/> 欢迎 {{ name }}</span> <span class="logout" @click="logout"><span class="cut-line"/><svg-icon icon-class="logout"/> 注销系统</span>
+          <span><svg-icon icon-class="user"/> 欢迎 {{ getToken }}</span> <span class="logout" @click="logout"><span class="cut-line"/><svg-icon icon-class="logout"/> 注销</span>
         </div>
       </div>
       <div style="flex-grow: 1;overflow: auto">
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { getToken } from '@/utils/auth'
 import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapGetters } from 'vuex'
@@ -50,7 +51,8 @@ export default {
     ...mapGetters([
       'name',
       'roles'
-    ])
+    ]),
+    getToken
   },
   methods: {
     handleClickOutside() {
