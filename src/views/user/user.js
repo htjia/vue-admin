@@ -1,66 +1,80 @@
 
 import PageHeaderLayout from '@/components/PageHeaderLayout'
 import HeaderSearchAdd from '@/components/HeaderSearchAdd'
-import { getList, add, update, remove, updatePwd, configInfo, saveUserDetail } from '@/api/user'
+import { getList, remove, configInfo, saveUserDetail, restPassWord } from '@/api/user'
 import { deptList } from '@/api/department'
 import { postList } from '@/api/post'
 import { roles } from '@/api/roles'
 export default {
   components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
-    const validateName = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入用户名'))
+    const validateUserName = (rule, value, callback) => {
+      const pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+      const chinese = new RegExp('[\u4e00-\u9fa5]')
+      if (value.trim().length === 0) {
+        callback(new Error('请输入用账号'))
       } else {
-        if (value.length > 15) {
-          callback(new Error('不能大于15位'))
+        if (chinese.test(value)) {
+          callback(new Error('账号不能为汉字'))
+        } else if (pattern.test(value)) {
+          callback(new Error('账号不能包含特殊字符'))
+        } else if (value.length < 6) {
+          callback(new Error('账号长度不能小于 6 位'))
+        } else if (value.length > 20) {
+          callback(new Error('账号长度不能大于 20 位'))
+        } else {
+          callback()
+        }
+      }
+    }
+    const validateName = (rule, value, callback) => {
+      const pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+      const num = new RegExp('[0-9]')
+      if (value.trim().length === 0) {
+        callback(new Error('请输入姓名'))
+      } else {
+        if (num.test(value)) {
+          callback(new Error('姓名不能包含数字'))
+        } else if (pattern.test(value)) {
+          callback(new Error('姓名不能包含特殊字符'))
+        } else if (value.length > 20) {
+          callback(new Error('姓名长度不能大于 20 位'))
         } else {
           callback()
         }
       }
     }
     const validatePassWord = (rule, value, callback) => {
-      if (value === '') {
+      if (value.trim().length === 0) {
         callback(new Error('请输入密码'))
       } else {
         if (value.length < 6) {
-          callback(new Error('密码不能小于 6 位'))
-        } else if (value.length > 16) {
-          callback(new Error('密码不能大于 16 位'))
+          callback(new Error('密码长度不能小于 6 位'))
+        } else if (value.length > 20) {
+          callback(new Error('密码长度不能大于 20 位'))
         } else {
           callback()
         }
       }
     }
-    const validateOldPwd = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入旧密码'))
+    const validateConfirmPassWord = (rule, value, callback) => {
+      if (value.trim().length === 0) {
+        callback(new Error('请输入确认密码'))
       } else {
-        if (this.passwordForm.newPwd === value) {
-          callback(new Error('新旧密码不能相同'))
+        if (value !== this.userForm.passWord) {
+          callback(new Error('两次输入密码不一致'))
         } else {
           callback()
         }
       }
     }
-    const validateNewPwd = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入新密码'))
-      } else {
-        if (this.passwordForm.oldPwd === value) {
-          callback(new Error('新旧密码不能相同'))
-        } else {
-          callback()
-        }
-      }
-    }
-    const validateDept = (rule, value, callback) => {
-      if (value.length === 0) {
-        callback(new Error('请选择部门'))
-      } else {
-        callback()
-      }
-    }
+    // const validateDept = (rule, value, callback) => {
+    //   if (value.length === 0) {
+    //     callback(new Error('请选择部门'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       listLoading: false,
       addDialogVisible: false,
@@ -83,30 +97,26 @@ export default {
       totalPage: 0,
       name: '',
       userForm: {
+        name: '',
         userName: '',
-        passWord: ''
+        passWord: '',
+        confirmPassWord: '',
+        role: ''
       },
-      passwordForm: {
-        oldPwd: '',
-        newPwd: ''
-      },
-      configForm: {
-        post: '',
-        role: '',
-        dept: ''
-      },
-      configRules: {
-        post: [{ required: true, message: '请选择岗位', trigger: 'blur' }],
-        role: [{ required: true, message: '请选择角色', trigger: 'blur' }],
-        dept: [{ required: true, validator: validateDept, trigger: 'blur' }]
-      },
-      passwordRules: {
-        oldPwd: [{ required: true, validator: validateOldPwd, trigger: 'blur' }],
-        newPwd: [{ required: true, validator: validateNewPwd, trigger: 'blur' }]
-      },
+      // configForm: {
+      //   post: '',
+      //   dept: ''
+      // },
+      // configRules: {
+      //   post: [{ required: true, message: '请选择岗位', trigger: 'blur' }],
+      //   dept: [{ required: true, validator: validateDept, trigger: 'blur' }]
+      // },
       rules: {
-        userName: [{ required: true, validator: validateName, trigger: 'blur' }],
-        passWord: [{ required: true, validator: validatePassWord, trigger: 'blur' }]
+        name: [{ required: true, validator: validateName, trigger: 'blur' }],
+        userName: [{ required: true, validator: validateUserName, trigger: 'blur' }],
+        passWord: [{ required: true, validator: validatePassWord, trigger: 'blur' }],
+        confirmPassWord: [{ required: true, validator: validateConfirmPassWord, trigger: 'blur' }],
+        role: [{ required: true, message: '请选择角色', trigger: 'blur' }]
       },
       currentId: ''
     }
@@ -122,8 +132,8 @@ export default {
     this.fetchData(params)
   },
   mounted() {
-    this.getDeptList()
-    this.getPostList()
+    // this.getDeptList()
+    // this.getPostList()
     this.getRoleList()
   },
   methods: {
@@ -222,35 +232,46 @@ export default {
     },
     // 添加
     handleAdd() {
+      this.userForm.name = ''
       this.userForm.userName = ''
       this.userForm.passWord = ''
+      this.userForm.confirmPassWord = ''
+      this.userForm.role = []
       this.addDialogVisible = true
     },
     // 关闭
-    handleClose(done) {
-      done()
+    handleClose(formName) {
+      this.$refs[formName].resetFields()
     },
     // 添加提交
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const params = {
-            password: this.userForm.passWord,
-            username: this.userForm.userName
+          const role = []
+          for (const item of this.userForm.role) {
+            role.push({
+              id: item
+            })
           }
-          add(params).then(res => {
+          const params = {
+            listRole: role,
+            sysUser: {
+              // id: this.currentId,
+              name: this.userForm.name.trim(),
+              username: this.userForm.userName.trim(),
+              password: this.userForm.passWord.trim()
+            }
+          }
+          console.log(params)
+          saveUserDetail(params).then(res => {
             if (res.code === 0) {
               this.$message({
                 type: 'success',
                 message: '添加成功!'
               })
+              this.$refs[formName].resetFields()
               this.addDialogVisible = false
               this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
             }
           })
         } else {
@@ -263,95 +284,29 @@ export default {
     submitEditForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const params = {
-            username: this.userForm.userName,
-            id: this.currentId
+          const role = []
+          for (const item of this.userForm.role) {
+            role.push({
+              id: item
+            })
           }
-          update(params).then(res => {
+          const params = {
+            listRole: role,
+            sysUser: {
+              id: this.currentId,
+              username: this.userForm.userName.trim(),
+              name: this.userForm.name.trim()
+            }
+          }
+          console.log(params)
+          saveUserDetail(params).then(res => {
             if (res.code === 0) {
               this.$message({
                 type: 'success',
                 message: '编辑成功!'
               })
               this.editDialogVisible = false
-              this.fetchData()
-            } else {
-              this.$message({
-                type: 'warning',
-                message: res.message
-              })
-            }
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 修改密码确认
-    submitPawForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          const params = {
-            oldPassword: this.passwordForm.oldPwd,
-            newPassword: this.passwordForm.newPwd,
-            userId: this.currentId
-          }
-          updatePwd(params).then(res => {
-            if (res.code === 0) {
-              this.$message({
-                type: 'success',
-                message: '修改成功!'
-              })
-              this.updatePwdDialogVisible = false
-              this.fetchData()
-            }
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 配置确认
-    submitConfigForm(formName) {
-      this.configForm.dept = this.$refs.tree.getCheckedKeys()
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          const role = []
-          const post = []
-          const dept = []
-          for (const item of this.configForm.role) {
-            role.push({
-              id: item
-            })
-          }
-          for (const item of this.configForm.post) {
-            post.push({
-              id: item
-            })
-          }
-          for (const item of this.$refs.tree.getCheckedKeys()) {
-            dept.push({
-              id: item
-            })
-          }
-          const params = {
-            listDepartment: dept,
-            listStation: post,
-            listRole: role,
-            sysUser: {
-              id: this.currentId,
-              username: this.username
-            }
-          }
-          saveUserDetail(params).then(res => {
-            if (res.code === 0) {
-              this.$message({
-                type: 'success',
-                message: '配置成功!'
-              })
-              this.configDialogVisible = false
+              this.$refs[formName].resetFields()
               this.fetchData()
             }
           })
@@ -371,9 +326,19 @@ export default {
     },
     // 编辑
     handleEdit(row) {
+      this.userForm.role = []
       this.currentId = row.id
+      this.userForm.name = row.name
       this.userForm.userName = row.username
       this.editDialogVisible = true
+      configInfo(row.id).then(res => {
+        if (res.code === 0) {
+          console.log(res.data)
+          for (const item of res.data.listRole) {
+            this.userForm.role.push(item.id)
+          }
+        }
+      })
     },
     // 删除
     handleDelete(row) {
@@ -395,12 +360,26 @@ export default {
       }).catch(() => {
       })
     },
-    // 修改密码
+    // 重置密码
     handleUpdatePwd(row) {
+      console.log(row)
       this.currentId = row.id
-      this.updatePwdDialogVisible = true
-      this.passwordForm.oldPwd = ''
-      this.passwordForm.newPwd = ''
+      this.$confirm(`确认将用户名为 “${row.username}” 的密码重置为 888888 ？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        restPassWord({ id: row.id }).then(res => {
+          if (res.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '重置成功!'
+            })
+            this.fetchData()
+          }
+        })
+      }).catch(() => {
+      })
     },
     // 配置
     handleConfig(row) {

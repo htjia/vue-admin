@@ -4,7 +4,8 @@
     <breadcrumb />
     <div class="avatar-container">
       <screenfull class="screenfull" />
-      <span class="refresh" @click="refresh"><i class="el-icon-refresh"/> 刷新</span><span v-if="hasBack" class="back" @click="back"><i class="el-icon-arrow-left" />返回</span>
+      <span class="refresh" @click="refresh"><svg-icon style="font-size: 18px; margin-bottom:-1px;margin-right: 5px" icon-class="shuaxin"/>刷新</span>
+      <span v-if="hasBack" class="back" @click="back"><svg-icon style="font-size: 19px;margin-right: 5px" icon-class="back" /><span style="font-size: 12px">返回</span></span>
     </div>
   </el-menu>
 </template>
@@ -65,23 +66,17 @@ export default {
     .refresh{
       margin-left: 15px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 12px;
       .el-icon-refresh{
         font-size: 23px;
         vertical-align: middle;
         margin-bottom: 2px;
-        color:#009688;
+        color:#009494;
       }
     }
     .back{
       margin-left: 15px;
       cursor: pointer;
-      .el-icon-arrow-left{
-        font-size: 23px;
-        vertical-align: middle;
-        margin-bottom: 2px;
-        color:#009688;
-      }
     }
     .avatar-wrapper {
       cursor: pointer;

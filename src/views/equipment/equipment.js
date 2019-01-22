@@ -5,7 +5,7 @@ export default {
   components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
     const validateName = (rule, value, callback) => {
-      if (value === '') {
+      if (value.trim().length === 0) {
         callback(new Error('请输入设备名称'))
       } else {
         if (value.length < 1) {
@@ -16,7 +16,7 @@ export default {
       }
     }
     const validateIp = (rule, value, callback) => {
-      if (value === '') {
+      if (value.trim().length === 0) {
         callback(new Error('请输入IP地址'))
       } else {
         if (value.length < 1) {
@@ -27,7 +27,7 @@ export default {
       }
     }
     const validatePort = (rule, value, callback) => {
-      if (value === '') {
+      if (value.trim().length === 0) {
         callback(new Error('请输入端口号'))
       } else {
         if (value.length < 1) {
@@ -174,6 +174,7 @@ export default {
                 type: 'success',
                 message: '添加成功!'
               })
+              this.$refs[formName].resetFields()
               this.addDialogVisible = false
               this.fetchData()
             }
@@ -201,6 +202,7 @@ export default {
                 type: 'success',
                 message: '编辑成功!'
               })
+              this.$refs[formName].resetFields()
               this.editDialogVisible = false
               this.fetchData()
             }

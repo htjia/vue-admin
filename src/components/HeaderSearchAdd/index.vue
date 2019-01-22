@@ -1,10 +1,11 @@
 <template>
   <div class="header-search-add">
-    <el-input v-model="searchkey" :placeholder="placeholderText" class="searchInput" clearable>
+    <el-input v-model="searchkey" :placeholder="placeholderText" size="medium" class="searchInput" clearable>
       <template slot="append"><el-button type="primary" icon="el-icon-search" @click="handleSearch">搜 索</el-button></template>
     </el-input>
     <el-button
       v-if="hasAddBtn"
+      size="medium"
       class="float-right-btn"
       type="primary"
       icon="el-icon-plus"
@@ -32,7 +33,7 @@ export default {
   },
   methods: {
     handleSearch() {
-      this.$emit('handleSearch', this.searchkey)
+      this.$emit('handleSearch', this.searchkey.trim())
     },
     handleAdd() {
       this.$emit('handleAdd')

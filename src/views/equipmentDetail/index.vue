@@ -12,7 +12,7 @@
         <el-table
           v-loading="listLoading"
           :data="list"
-          element-loading-text="Loading"
+          element-loading-text="拼命加载中"
           border
           fit
           stripe
@@ -79,7 +79,7 @@
           <el-table
             v-loading="listLoading"
             :data="lists"
-            element-loading-text="Loading"
+            element-loading-text="拼命加载中"
             border
             fit
             stripe

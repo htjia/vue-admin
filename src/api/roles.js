@@ -14,7 +14,7 @@ export function add(params) {
   return request({
     url: '/role/add',
     method: 'post',
-    params
+    data: params
   })
 }
 
@@ -32,5 +32,13 @@ export function remove(params) {
   return request({
     url: `/role/${params}/delete`,
     method: 'delete'
+  })
+}
+// 获取所有菜单列表
+export function menus(params) {
+  return request({
+    url: '/Menu/list',
+    method: 'get',
+    params
   })
 }

@@ -17,13 +17,22 @@ export default {
     const vnodes = []
 
     if (icon) {
-      vnodes.push(<svg-icon icon-class={icon}/>)
+      vnodes.push(<svg-icon style='fontSize:20px;marginBottom:-3px;marginRight:10px' icon-class={icon}/>)
     }
 
     if (title) {
-      vnodes.push(<span slot='title'>{(title)}</span>)
+      if (!icon) {
+        vnodes.push(<span class='has-margin' slot='title'>{(title)}</span>)
+      } else {
+        vnodes.push(<span slot='title'>{(title)}</span>)
+      }
     }
     return vnodes
   }
 }
 </script>
+<style scoped>
+  .has-margin{
+    margin-left: 5px;
+  }
+</style>

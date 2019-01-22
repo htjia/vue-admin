@@ -41,7 +41,6 @@ exports.cssLoaders = function(options) {
     } else {
       loaders.push('vue-style-loader')
     }
-
     loaders.push(cssLoader)
 
     if (options.usePostCSS) {

@@ -1,199 +1,264 @@
 import PageHeaderLayout from '@/components/PageHeaderLayout'
 import HeaderSearchAdd from '@/components/HeaderSearchAdd'
-import { logList } from '@/api/uploadLog'
+import { productList, eqptMouldRecommend, compScrapRateTrend } from '@/api/equipmentRecommend'
 import Chart from '@/components/Charts'
 export default {
   components: { PageHeaderLayout, HeaderSearchAdd, Chart },
   data() {
     return {
+      isStart: true,
+      productModelForm: {
+        productModel: ''
+      },
+      productModelValue: '',
+      productModelOptions: [],
+      eqptCodeOptions: [],
+      mouldCodeOptions: [],
+      rules: {
+        productModel: [
+          { required: true, message: '请选择产品型号', trigger: 'change' }
+        ]
+      },
       chart: null,
       listLoading: false,
       workOrderId: '',
-      isUnfolded: false,
-      mouldIsUnfolded: false,
       searchTime: [],
       productModel: '',
       productionQuantity: '',
-      lists: [{}, {}, {}, {}, {}],
-      listss: [{}, {}, {}, {}, {}],
+      list: [],
       pageSize: 15,
       pageNum: 1,
       searchkey: '',
       totalPage: 0,
-      tokenForm: {
-        tokenId: '',
-        name: '',
-        password: ''
-      },
-      rules: {
-        tokenId: [{ required: true, message: 'id不能为空', trigger: 'blur' }],
-        name: [{ required: true, message: 'name不能为空', trigger: 'blur' }],
-        password: [{ required: true, message: 'password不能为空', trigger: 'blur' }]
-      },
       currentId: '',
+      eqptId: '',
+      trendEqptId: '',
+      mouldId: '',
+      trendMouldId: '',
+      groupName: '',
+      sortTpye: 0,
+      sortBy: 0,
       options: {
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
+          formatter: function(params) {
+            var result = '工单编号：' + params[0].name + '<br>'
+            params.forEach(function(item) {
+              result += '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + item.color + '"></span>'
+              if (item.seriesName === '报废率') {
+                result += item.seriesName + ' : ' + '<span style="color:#fff">' + item.data + ' %</span><br>'
+              } else {
+                result += item.seriesName + ' : ' + '<span style="color:#fff">' + item.data + '</span>'
+              }
+            })
+            return result
+          },
+          axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'line' // 默认为直线，可选为：'line' | 'shadow'
+          }
         },
-        toolbox: {
-        },
-        calculable: false,
         xAxis: [
           {
-            type: 'value',
-            boundaryGap: [0, 0.01],
+            type: 'category',
+            data: [],
+            nameTextStyle: {
+              color: '#474747'
+            },
             axisLine: {
               lineStyle: {
-                color: 'rgb(174, 174, 174)',
+                color: '#474747',
                 width: 1
-              },
-              show: true
+              }
             },
             axisTick: {
-              show: true,
-              inside: true,
-              length: 5,
               lineStyle: {
-                color: 'rgb(174, 174, 174)'
+                color: '#474747'
               }
-            },
-            splitLine: {
-              show: false
             },
             axisLabel: {
-              textStyle: {
-                color: '#666'
-              }
-            }
-            // minInterval: 1 // 解决问题：实际上的统计信息，其数据都是整数，没有小数。所以希望图形中的刻度也不要出现小数；
+              margin: 20
+            },
+            boundaryGap: false
+          }
+        ],
+        dataZoom: [
+          {
+            start: 0, // 默认为0
+            end: 100,
+            type: 'slider', // slider 表示有滑动块的，inside表示内置的
+            show: true, // 如果为false 则不显示
+            xAxisIndex: [0],
+            handleSize: 0, // 滑动条的 左右2个滑动条的大小
+            height: 12, // 组件高度
+            left: 30, // 左边的距离
+            right: 20, // 右边的距离
+            bottom: 20, // 右边的距离
+            fillerColor: '#d3d3d3', // 选中范围的填充颜色。
+            backgroundColor: '#f9f9f9', // 两边未选中的滑动条区域的颜色
+            showDataShadow: false, // 是否显示数据阴影 默认auto
+            showDetail: false, // 即拖拽时候是否显示详细数值信息 默认true
+            filterMode: 'filter'
           }
         ],
         yAxis: [
           {
-            type: 'category',
-            data: ['13#', '14#', '17#', '4#', '2#', '1#'],
+            name: '报废率',
+            type: 'value',
             axisLine: {
-              show: true,
               lineStyle: {
-                color: 'rgb(174, 174, 174)',
+                color: '#474747',
                 width: 1
               }
             },
-            axisLabel: {
-              margin: 15,
-              textStyle: {
-                color: '#666'
-              }
-              // formatter: '{value} 包'
-            },
             axisTick: {
-              show: false
-            },
-            splitLine: {
+              show: true,
               lineStyle: {
-                color: 'rgb(215, 215, 215)'
-              },
-              show: true
+                color: '#474747'
+              }
             }
           }
         ],
         series: [
           {
             name: '报废率',
-            type: 'bar',
-            itemStyle: {
-              normal: {
-                color: function(params) {
-                  var colorList = [
-                    '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7',
-                    '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688',
-                    '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7',
-                    '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7'
-                  ]
-                  return colorList[params.dataIndex]
-                }
-              }
-            },
-
-            // 设置柱的宽度，要是数据太少，柱子太宽不美观~
-
-            barWidth: 20, // 柱子宽度
-            barGap: '0', // 柱子间距离
-            barCategoryGap: '200%',
-            data: [0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
+            type: 'line',
+            hoverAnimation: false,
+            data: [11, 11, 15, 13, 12, 13, 10, 10, 10, 10, 10, 10, 10, 10]
           }
         ],
-        // color: ['rgb(51, 169, 169)'],
-        animation: true,
-        animationEasing: 'ElasticInOut',
         grid: {
-          x: 50,
-          y: 20,
-          x2: 30,
+          x: 30,
+          y: 30,
+          x2: 20,
           y2: 40
-        }
+        },
+        color: ['#c5221f', '#87cefa', '#da70d6']
       }
     }
   },
   watch: {
-    isUnfolded(newV, oldV) {
-      if (newV) {
-        this.lists = [
-          {}, {}, {}, {}, {}, {}, {}, {}, {}
-        ]
-      } else {
-        this.lists = [
-          {}, {}, {}, {}, {}
-        ]
-      }
-      this.$refs.moduleContentLeft.style.height = 44 + this.lists.length * 42 + 'px'
-      this.$refs.equipmentChart.onResize()
-    },
-    mouldIsUnfolded(newV, oldV) {
-      if (newV) {
-        this.listss = [
-          {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
-        ]
-      } else {
-        this.listss = [
-          {}, {}, {}, {}, {}
-        ]
-      }
-      this.$refs.moduleContentLeft2.style.height = 45 + this.listss.length * 42 + 'px'
-      this.$refs.equipmentChart2.onResize()
-    }
   },
   created() {
-    const params = {
-      pageNum: 1,
-      pageSize: 15,
-      searchkey: ''
-    }
-    this.fetchData(params)
+    this.getProductList()
   },
   mounted() {
   },
   methods: {
+    // 获取所有产品
+    getProductList() {
+      const params = {}
+      productList(params).then(res => {
+        this.productModelOptions = res.data
+      })
+    },
+    // 设备推荐
+    eqptMouldRecommendFun() {
+      const params = {
+        productId: this.productModelForm.productModel,
+        eqptId: this.eqptId,
+        mouldId: this.mouldId,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+        sortTpye: this.sortTpye,
+        sortBy: this.sortBy
+      }
+      eqptMouldRecommend(params).then(res => {
+        console.log(res.data)
+        this.list = res.data.eqptMouldRecommends
+        this.totalPage = res.data.size
+        this.isStart = false
+        this.trendEqptId = res.data.eqptMouldRecommends[0].eqptId
+        this.trendMouldId = res.data.eqptMouldRecommends[0].mouldId
+        this.groupName = res.data.eqptMouldRecommends[0].recommendGroup
+        this.eqptCodeOptions = []
+        this.mouldCodeOptions = []
+        for (const item of res.data.eqptCode) {
+          this.eqptCodeOptions.push({
+            id: item,
+            name: item
+          })
+        }
+        for (const item of res.data.mouldCode) {
+          this.mouldCodeOptions.push({
+            id: item,
+            name: item
+          })
+        }
+        this.compScrapRateTrendFun()
+      })
+    },
+    submitForm(formName) {
+      if (formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.eqptMouldRecommendFun()
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      } else {
+        this.eqptMouldRecommendFun()
+      }
+    },
+    compScrapRateTrendFun() {
+      const params = {
+        // productId: this.productModelForm.productModel,
+        // eqptId: this.trendEqptId,
+        // mouldId: this.trendMouldId
+        productId: '1323',
+        eqptId: '344',
+        mouldId: '8192'
+      }
+      compScrapRateTrend(params).then(res => {
+        var xAxisData = []
+        var daNumArray = []
+        for (const item of res.data) {
+          xAxisData.push(item.woCode)
+          daNumArray.push(item.rejectRatio)
+        }
+        this.options.xAxis[0].data = xAxisData
+        this.options.series[0].data = daNumArray
+        if (res.data.length > 30) {
+          this.options.dataZoom[0].start = 100 - Math.floor(30 / res.data.length * 100)
+          this.options.dataZoom[0].show = true
+          this.options.xAxis.axisLabel.margin = 20
+          this.options.grid.y2 = 35
+        } else {
+          this.options.dataZoom[0].show = false
+          this.options.xAxis.axisLabel.margin = 10
+          this.options.grid.y2 = 25
+        }
+      })
+    },
+    sortChange(column) {
+      console.log(column)
+      if (column.order === 'ascending') {
+        this.sortTye = 0
+      } else {
+        this.sortTye = 1
+      }
+      if (column.prop === 'rejectatio') {
+        this.sortBy = 1
+      } else if (column.prop === 'daNum') {
+        this.sortBy = 2
+      } else {
+        this.sortBy = 0
+      }
+      this.eqptMouldRecommendFun()
+    },
     barClick(val) {
       console.log(val)
     },
     // 每页数量改变
     sizeChange(pageSize) {
-      const params = {
-        pageNum: this.pageNum,
-        pageSize
-      }
       this.pageSize = pageSize
-      this.fetchData(params)
+      this.eqptMouldRecommendFun()
     },
     // 当前页数改变
     currentChange(pageNum) {
-      const params = {
-        pageSize: this.pageSize,
-        pageNum
-      }
       this.pageNum = pageNum
-      this.fetchData(params)
+      this.eqptMouldRecommendFun()
     },
     handleSearch(data) {
       const params = {
@@ -206,29 +271,11 @@ export default {
       }
       this.fetchData(params)
     },
-    // 查询
-    fetchData(params) {
-      this.listLoading = true
-      const requestParams = params || {
-        pageSize: this.pageSize,
-        pageNum: this.pageNum
-      }
-      logList(requestParams).then(res => {
-        if (res.code === 0) {
-          this.list = res.data.list
-          this.totalPage = parseInt(res.data.total)
-          this.listLoading = false
-        }
-      })
-    },
-    // 展开按钮
-    handleUnfold() {
-      console.log(this.isUnfolded)
-      this.isUnfolded = !this.isUnfolded
-    },
-    handleMouldUnfold() {
-      console.log(this.mouldIsUnfolded)
-      this.mouldIsUnfolded = !this.mouldIsUnfolded
+    rowClick(row) {
+      this.trendEqptId = row.eqptId
+      this.trendMouldId = row.mouldId
+      this.groupName = row.recommendGroup
+      this.compScrapRateTrendFun()
     }
   }
 }

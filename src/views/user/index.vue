@@ -5,7 +5,7 @@
       <el-table
         v-loading="listLoading"
         :data="list"
-        element-loading-text="Loading"
+        element-loading-text="拼命加载中"
         border
         fit
         stripe
@@ -15,11 +15,8 @@
             {{ scope.$index+1 }}
           </template>
         </el-table-column>
-        <el-table-column label="用户名" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.username }}
-          </template>
-        </el-table-column>
+        <el-table-column label="姓名" align="center" prop="name"/>
+        <el-table-column label="账号" align="center" prop="username"/>
         <!--<el-table-column label="密码" align="center"><template slot-scope="scope"><span>{{ scope.row.password }}</span></template></el-table-column>-->
         <el-table-column label="操作" align="center" max-width="550px">
           <template slot-scope="scope">
@@ -29,12 +26,9 @@
               @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
               size="mini"
+              type="primary"
               icon="el-icon-edit"
-              @click="handleUpdatePwd(scope.row)">修改密码</el-button>
-            <el-button
-              size="mini"
-              icon="el-icon-edit"
-              @click="handleConfig(scope.row)">配置</el-button>
+              @click="handleUpdatePwd(scope.row)">重置密码</el-button>
             <el-button
               size="mini"
               type="danger"
@@ -56,60 +50,71 @@
       />
     </div>
     <el-dialog
+      :close-on-click-modal="false"
       :visible.sync="addDialogVisible"
-      :before-close="handleClose"
       title="添加"
-      width="500px">
+      width="500px"
+      @close="handleClose('userForm')">
       <el-form ref="userForm" :model="userForm" :rules="rules" status-icon label-width="80px" label-position="left">
-        <el-form-item label="用户名" prop="userName">
-          <el-input v-model="userForm.userName" type="text"/>
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="userForm.name" type="text" placeholder="请输入姓名"/>
+        </el-form-item>
+        <el-form-item label="账号" prop="userName">
+          <el-input v-model="userForm.userName" type="text" placeholder="请输入账号"/>
         </el-form-item>
         <el-form-item label="密码" prop="passWord">
-          <el-input v-model="userForm.passWord" type="password"/>
+          <el-input v-model="userForm.passWord" type="password" placeholder="请输入密码"/>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassWord">
+          <el-input v-model="userForm.confirmPassWord" type="password" placeholder="请输入密码"/>
+        </el-form-item>
+        <el-form-item label="角色" prop="role">
+          <el-select v-model="userForm.role" multiple placeholder="请选择角色" style="width: 380px;">
+            <el-option
+              v-for="item in roleOptions"
+              :key="item.id"
+              :label="item.cnname"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('userForm')">取 消</el-button>
         <el-button type="primary" @click="submitForm('userForm')">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      :visible.sync="editDialogVisible"
-      :before-close="handleClose"
-      title="编辑"
-      width="500px">
-      <el-form ref="userForm" :model="userForm" :rules="rules" status-icon label-width="80px" label-position="left">
-        <el-form-item label="用户名" prop="userName">
-          <el-input v-model="userForm.userName" type="text"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
         <el-button @click="resetForm('userForm')">取 消</el-button>
-        <el-button type="primary" @click="submitEditForm('userForm')">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      :visible.sync="updatePwdDialogVisible"
-      :before-close="handleClose"
-      title="修改密码"
-      width="500px">
-      <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" status-icon label-width="80px" label-position="left">
-        <el-form-item label="旧密码" prop="oldPwd">
-          <el-input v-model="passwordForm.oldPwd" type="password"/>
+      :close-on-click-modal="false"
+      :visible.sync="editDialogVisible"
+      title="编辑"
+      width="500px"
+      @close="handleClose('userForm')">
+      <el-form ref="userForm" :model="userForm" :rules="rules" status-icon label-width="80px" label-position="left">
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="userForm.name" type="text" placeholder="请输入姓名"/>
         </el-form-item>
-        <el-form-item label="新密码" prop="newPwd">
-          <el-input v-model="passwordForm.newPwd" type="password"/>
+        <el-form-item label="账号" prop="userName">
+          <el-input v-model="userForm.userName" type="text" placeholder="请输入账号"/>
+        </el-form-item>
+        <el-form-item label="角色" prop="role">
+          <el-select v-model="userForm.role" multiple placeholder="请选择角色" style="width: 380px;">
+            <el-option
+              v-for="item in roleOptions"
+              :key="item.id"
+              :label="item.cnname"
+              :value="item.id"/>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('passwordForm')">取 消</el-button>
-        <el-button type="primary" @click="submitPawForm('passwordForm')">确 定</el-button>
+        <el-button type="primary" @click="submitEditForm('userForm')">确 定</el-button>
+        <el-button @click="resetForm('userForm')">取 消</el-button>
       </span>
     </el-dialog>
-    <el-dialog
+    <!--<el-dialog
       :visible.sync="configDialogVisible"
       :before-close="handleClose"
-      title="配置信息"
+      title="配置角色"
       width="500px">
       <el-form ref="configForm" :model="configForm" :rules="configRules" status-icon label-width="60px" label-position="left">
         <el-form-item label="岗位" prop="post">
@@ -121,30 +126,29 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="角色" prop="role">
-          <el-select v-model="configForm.role" multiple placeholder="请选择角色" style="width: 400px;">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.id"
-              :label="item.cnname"
-              :value="item.id"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="部门" prop="dept">
-          <el-tree
-            ref="tree"
-            :props="defaultProps"
-            :data="treeData"
-            style="height: 260px;overflow: auto;border:1px solid #d7d7d7;border-radius: 4px"
-            show-checkbox
-            node-key="mainId"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('configForm')">取 消</el-button>
-        <el-button type="primary" @click="submitConfigForm('configForm')">确 定</el-button>
-      </span>
-    </el-dialog>
+    <el-form-item label="角色" prop="role">
+      <el-select v-model="configForm.role" multiple placeholder="请选择角色" style="width: 400px;">
+        <el-option
+          v-for="item in roleOptions"
+          :key="item.id"
+          :label="item.cnname"
+          :value="item.id"/>
+      </el-select>
+    </el-form-item>
+      <el-tree
+        ref="tree"
+        :props="defaultProps"
+        :data="treeData"
+        style="height: 260px;overflow: auto;border:1px solid #d7d7d7;border-radius: 4px"
+        show-checkbox
+        node-key="mainId"/>
+    </el-form-item>-->
+    <!--</el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="submitConfigForm('configForm')">确 定</el-button>
+      <el-button @click="resetForm('configForm')">取 消</el-button>
+    </span>
+  </el-dialog>-->
   </PageHeaderLayout>
 </template>
 

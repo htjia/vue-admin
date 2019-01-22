@@ -44,7 +44,7 @@ export function updatePwd(params) {
   })
 }
 
-// 配置信息
+// 详细信息
 export function configInfo(id) {
   return request({
     url: `/user/${id}/detail`,
@@ -58,5 +58,13 @@ export function saveUserDetail(params) {
     url: '/user/SaveUserDetail',
     method: 'post',
     data: params
+  })
+}
+// 重置密码
+export function restPassWord(params) {
+  return request({
+    url: '/user/restPassWord',
+    method: 'post',
+    params
   })
 }

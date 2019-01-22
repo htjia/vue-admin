@@ -1,43 +1,16 @@
 <template>
   <PageHeaderLayout >
-    <div id="chart" style="width: 100%;height: 200px;">12</div>
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      stripe
-      highlight-current-row>
-      <el-table-column align="center" label="序号" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index+1 }}
-        </template>
-      </el-table-column>
-      <el-table-column label="任务单号" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.code }}
-        </template>
-      </el-table-column>
-      <el-table-column label="设备单号" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.factorycode }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="名称" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-      <!--<el-table-column align="center" prop="created_at" label="操作" width="200">--><!--<template slot-scope="scope">--><!--<el-button type="primary" size="mini" @click="detail(scope.row)"> <i class="el-icon-search"/> 查看详情</el-button>--><!--</template>-->
-      <!--</el-table-column>-->
-    </el-table>
+    <div class="app-container dashboard-container">
+      <!--<div id="chart" style="width: 100%;height: 100%;">12</div>-->
+      <img class="home-logo" src="../../../static/img/home-logo.png" alt="home-img">
+      <img class="dashboard-container-img" src="../../../static/img/home-bg.jpg" alt="home-bg">
+      <div class="copyright">Copyright &copy; 2018 Brain Matrix, All Rights Reserved</div>
+    </div>
   </PageHeaderLayout>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { getList } from '@/api/device'
 import PageHeaderLayout from '@/components/PageHeaderLayout'
 import echarts from 'echarts'
 import resize from '@/utils/resize'
@@ -47,8 +20,6 @@ export default {
   mixins: [resize],
   data() {
     return {
-      list: [],
-      listLoading: false,
       chart: null
     }
   },
@@ -59,23 +30,11 @@ export default {
     ])
   },
   created() {
-    // this.fetchData()
   },
   mounted() {
     this.initChart()
   },
   methods: {
-    fetchData() {
-      this.listLoading = true
-      getList().then(response => {
-        this.list = response.data
-        this.listLoading = false
-      })
-    },
-    detail(row) {
-      console.log(row)
-      this.$router.push({ path: '/listDetail', query: { id: row.id }})
-    },
     initChart() {
       this.chart = echarts.init(document.getElementById('chart'))
       this.chart.setOption({
@@ -260,13 +219,40 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 0px;
+  .dashboard {
+    &-container {
+      margin: 0px;
+    }
+    &-text {
+      font-size: 30px;
+      line-height: 46px;
+    }
   }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
+  .dashboard-container{
+    height: calc(100vh - 127px);
+    padding: 0;
+    position: relative;
   }
-}
+  .home-logo{
+    position: absolute;
+    width: 630px;
+    height: 182px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-70%, -50%);
+  }
+  .dashboard-container-img{
+    height: 99%;
+    width: 100%;
+  }
+  .copyright{
+    width: 322px;
+    position: absolute;
+    bottom:5%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ccc;
+    text-align: center;
+    font-size: 12px;
+  }
 </style>

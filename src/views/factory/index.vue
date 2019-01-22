@@ -48,6 +48,7 @@
       </el-tree>
     </div>
     <el-dialog
+      :close-on-click-modal="false"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
       title="添加"
@@ -63,6 +64,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      :close-on-click-modal="false"
       :visible.sync="editDialogVisible"
       :before-close="handleClose"
       title="编辑"

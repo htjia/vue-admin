@@ -7,7 +7,7 @@ export default {
   components: { PageHeaderLayout, HeaderSearchAdd, TreeTable },
   data() {
     const validateNodeName = (rule, value, callback) => {
-      if (value === '') {
+      if (value.trim().length === 0) {
         callback(new Error('请输入名称'))
       } else {
         if (value.length < 1) {

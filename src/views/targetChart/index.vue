@@ -1,6 +1,6 @@
 <template>
   <PageHeaderLayout >
-    <div id="chart" style="width: 100%;height: calc(100vh - 126px);"><div v-loading="true" class="preloading">正在加载请稍后...</div></div>
+    <div id="chart" style="width: 100%;height: calc(100vh - 127px);"><div v-loading="true" class="preloading">正在加载请稍后...</div></div>
   </PageHeaderLayout>
 </template>
 

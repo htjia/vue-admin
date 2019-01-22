@@ -5,7 +5,7 @@
       <el-table
         v-loading="listLoading"
         :data="list"
-        element-loading-text="Loading"
+        element-loading-text="拼命加载中"
         border
         fit
         stripe
@@ -49,6 +49,7 @@
       />
     </div>
     <el-dialog
+      :close-on-click-modal="false"
       :visible.sync="addDialogVisible"
       :before-close="handleClose"
       title="添加"
@@ -64,6 +65,7 @@
       </span>
     </el-dialog>
     <el-dialog
+      :close-on-click-modal="false"
       :visible.sync="editDialogVisible"
       :before-close="handleClose"
       title="编辑"

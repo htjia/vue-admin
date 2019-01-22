@@ -23,7 +23,7 @@
         d="M333.590658 594.033341 167.8171 759.804852 64.218604 655.67219 64.218604 958.270996 366.342596 958.502263 262.234493 855.071589 428.421466 688.86108Z"
         p-id="2073"/>
     </svg>
-    全屏
+    <span style="font-size: 12px">全屏</span>
   </div>
 </template>
 
@@ -70,10 +70,11 @@ export default {
 .screenfull-svg {
   display: inline-block;
   cursor: pointer;
-  fill: #009688;;
-  width: 20px;
-  height: 20px;
-  vertical-align: -5px;
-  color: #009688;
+  fill: #009494;;
+  width: 18px;
+  height: 18px;
+  vertical-align: -4px;
+  color: #009494;
+  margin-right: 1px;
 }
 </style>

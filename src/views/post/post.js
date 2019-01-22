@@ -5,7 +5,7 @@ export default {
   components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
     const validatePost = (rule, value, callback) => {
-      if (value === '') {
+      if (value.trim().length === 0) {
         callback(new Error('请输入岗位名称'))
       } else {
         if (value.length < 1) {
@@ -111,6 +111,7 @@ export default {
                 type: 'success',
                 message: '添加成功!'
               })
+              this.$refs[formName].resetFields()
               this.addDialogVisible = false
               this.fetchData()
             }
@@ -136,6 +137,7 @@ export default {
                 message: '编辑成功!'
               })
               this.editDialogVisible = false
+              this.$refs[formName].resetFields()
               this.fetchData()
             }
           })

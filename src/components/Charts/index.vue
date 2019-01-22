@@ -60,8 +60,16 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id))
       this.chart.setOption(this.options)
       this.chart.on('click', function(e) {
-        if (e.seriesName === '报废率') {
-          _this.$emit('barClick', e.dataIndex)
+        console.log('echarts 点击事件-----------')
+        console.log(e)
+        if (e.data.eqptId) {
+          _this.$emit('barClick', e.data.eqptId)
+        } else if (e.data.woCode) {
+          _this.$emit('barClick', e.data.woCode)
+        } else if (e.seriesName === '生产总数对比') {
+          _this.$emit('daNumClick', e.name)
+        } else if (e.seriesName === '报废总数对比') {
+          _this.$emit('rejectNumClick', e.name)
         }
       })
     },

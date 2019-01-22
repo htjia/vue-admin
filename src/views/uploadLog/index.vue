@@ -30,21 +30,19 @@
       <el-table
         v-loading="listLoading"
         :data="list"
-        element-loading-text="Loading"
+        :default-sort = "{prop: 'tableName', order: 'descending'}"
+        element-loading-text="拼命加载中"
         border
         fit
         stripe
-        highlight-current-row>
+        highlight-current-row
+        @sort-change="sortChange">
         <el-table-column align="center" label="序号" width="95">
           <template slot-scope="scope">
             {{ scope.$index+1 }}
           </template>
         </el-table-column>
-        <el-table-column label="表名" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.tableName }}
-          </template>
-        </el-table-column>
+        <el-table-column prop="tableName" label="表名" align="center" sortable/>
         <el-table-column label="上传时间" align="center">
           <template slot-scope="scope">
             {{ scope.row.uploadDate }}
@@ -72,7 +70,7 @@
     </div>
   </PageHeaderLayout>
 </template>
-<style>
+<style scoped>
   table.gridtable {
      font-family: verdana,arial,sans-serif;
      font-size:11px;
@@ -100,18 +98,18 @@
   table.gridtable td.none-bottom-border{
     border-bottom-color: transparent;
   }
-  .log-table .el-table tr:nth-child(1) td{
-    background: #ff4d4d !important;
-    color: #fff;
-  }
-  .log-table .el-table tr:nth-child(2) td{
-    background: #fe7373 !important;
-    color: #fff;
-  }
-  .log-table .el-table tr:nth-child(3) td{
-    background: #ff9797 !important;
-    color: #fff;
-  }
+  /*.log-table>>> .el-table tr:nth-child(1) td{*/
+    /*background: #ff4d4d !important;*/
+    /*color: #fff;*/
+  /*}*/
+  /*.log-table>>> .el-table tr:nth-child(2) td{*/
+    /*background: #fe7373 !important;*/
+    /*color: #fff;*/
+  /*}*/
+  /*.log-table>>> .el-table tr:nth-child(3) td{*/
+    /*background: #ff9797 !important;*/
+    /*color: #fff;*/
+  /*}*/
 </style>
 <script src="./uploadLog.js"></script>
 

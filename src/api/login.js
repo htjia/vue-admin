@@ -11,10 +11,12 @@ export function login(username, password) {
   })
 }
 
-export function getInfo(userId) {
+// 获取对应的menus
+export function getMeuns(params) {
   return request({
-    url: `/user/${userId}/detail`,
-    method: 'get'
+    url: '/user/getMeuns',
+    method: 'get',
+    params
   })
 }
 

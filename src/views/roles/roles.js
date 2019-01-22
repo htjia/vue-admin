@@ -1,27 +1,18 @@
 import PageHeaderLayout from '@/components/PageHeaderLayout'
 import HeaderSearchAdd from '@/components/HeaderSearchAdd'
-import { asyncRouterMap } from '@/router'
-import { roles, add, remove } from '@/api/roles'
+import { roles, add, remove, menus } from '@/api/roles'
 export default {
   components: { PageHeaderLayout, HeaderSearchAdd },
   data() {
     const validateName = (rule, value, callback) => {
-      if (value === '') {
+      const chinese = new RegExp('[\u4e00-\u9fa5]')
+      if (value.trim().length === 0) {
         callback(new Error('请输入角色名称'))
       } else {
-        if (value.length < 1) {
-          callback(new Error('不能小于1位'))
-        } else {
-          callback()
-        }
-      }
-    }
-    const validateCode = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入角色编码'))
-      } else {
-        if (value.length < 1) {
-          callback(new Error('不能小于1位'))
+        if (value.length > 20) {
+          callback(new Error('角色名称不能大于 20 位'))
+        } else if (!chinese.test(value)) {
+          callback(new Error('角色名称必须为中文'))
         } else {
           callback()
         }
@@ -31,12 +22,11 @@ export default {
       routers: [],
       routerValues: [],
       checkAll: false,
-      checkedRouters: ['department', 'departmentDetail'],
       isIndeterminate: true,
       listLoading: false,
       addDialogVisible: false,
       editDialogVisible: false,
-      permissionVisible: false,
+      checkedRouters: [],
       list: [],
       searchkey: '',
       pageSize: 15,
@@ -45,12 +35,13 @@ export default {
       name: '',
       roleForm: {
         roleName: '',
-        nameCode: ''
+        checkedRouters: []
       },
       rules: {
         roleName: [{ required: true, validator: validateName, trigger: 'blur' }],
-        nameCode: [{ required: true, validator: validateCode, trigger: 'blur' }]
+        checkedRouters: [{ type: 'array', required: true, message: '请选择用户权限', trigger: 'blur' }]
       },
+      selectedArr: [],
       currentId: ''
     }
   },
@@ -65,11 +56,13 @@ export default {
     this.fetchData(params)
   },
   mounted() {
+    this.getRouterList()
   },
   methods: {
     handleCheckAllChange(val) {
-      this.checkedRouters = val ? this.routerValues : []
+      this.roleForm.checkedRouters = val ? this.routerValues : []
       this.isIndeterminate = false
+      console.log(this.roleForm.checkedRouters)
     },
     handleCheckedRoutersChange(value) {
       const checkedCount = value.length
@@ -121,20 +114,21 @@ export default {
     // 添加
     handleAdd() {
       this.roleForm.roleName = ''
-      this.roleForm.nameCode = ''
+      this.roleForm.checkedRouters = []
       this.addDialogVisible = true
     },
     // 关闭
-    handleClose(done) {
-      done()
+    handleClose(formName) {
+      this.$refs[formName].resetFields()
     },
     // 添加提交
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const params = {
-            name: this.roleForm.nameCode,
-            cnname: this.roleForm.roleName
+            name: this.roleForm.roleName.trim(),
+            cnname: this.roleForm.roleName.trim(),
+            roleMenuList: this.roleForm.checkedRouters
           }
           add(params).then(res => {
             if (res.code === 0) {
@@ -142,6 +136,7 @@ export default {
                 type: 'success',
                 message: '添加成功!'
               })
+              this.$refs[formName].resetFields()
               this.addDialogVisible = false
               this.fetchData()
             }
@@ -157,9 +152,10 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const params = {
-            name: this.roleForm.nameCode,
-            cnname: this.roleForm.roleName,
-            id: this.currentId
+            name: this.roleForm.roleName.trim(),
+            cnname: this.roleForm.roleName.trim(),
+            id: this.currentId,
+            roleMenuList: this.roleForm.checkedRouters
           }
           add(params).then(res => {
             if (res.code === 0) {
@@ -167,6 +163,7 @@ export default {
                 type: 'success',
                 message: '编辑成功!'
               })
+              this.$refs[formName].resetFields()
               this.editDialogVisible = false
               this.fetchData()
             }
@@ -181,14 +178,13 @@ export default {
     resetForm(formName) {
       this.editDialogVisible = false
       this.addDialogVisible = false
-      this.permissionVisible = false
       this.$refs[formName].resetFields()
     },
     // 编辑
     handleEdit(row) {
       this.currentId = row.id
       this.roleForm.roleName = row.cnname
-      this.roleForm.nameCode = row.name
+      this.roleForm.checkedRouters = row.roleMenuList
       this.editDialogVisible = true
     },
     // 删除
@@ -211,24 +207,21 @@ export default {
       }).catch(() => {
       })
     },
-    // 配置权限
-    handPermission() {
-      console.log(asyncRouterMap)
-      const RouterMap = []
-      asyncRouterMap.pop()
-      for (const item of asyncRouterMap) {
-        RouterMap.push({
-          name: item.children[0].meta.title,
-          value: item.path.substr(1)
-        })
-        this.routerValues.push(item.path.substr(1))
-      }
-      this.permissionVisible = true
-      this.routers = RouterMap
-    },
-    // 权限配置提交
-    submitPermissionForm() {
-      console.log(this.checkedRouters)
+    // 获取菜单
+    getRouterList() {
+      menus({}).then(res => {
+        if (res.code === 0) {
+          const RouterMap = []
+          for (const item of res.data) {
+            RouterMap.push({
+              name: item.menuName,
+              value: item.id
+            })
+            this.routerValues.push(item.id)
+          }
+          this.routers = RouterMap
+        }
+      })
     }
   }
 }

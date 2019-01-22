@@ -79,6 +79,10 @@ export default {
   mounted() {
   },
   methods: {
+    sortChange(column) {
+      console.log(column)
+      this.list = [{}, {}]
+    },
     // 每页数量改变
     sizeChange(pageSize) {
       const params = {

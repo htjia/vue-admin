@@ -1,4 +1,4 @@
-import { login, getInfo } from '@/api/login'
+import { login, getMeuns } from '@/api/login'
 import { getToken, setToken, removeToken, getUserId, setUserId, removeUserId } from '@/utils/auth'
 
 const user = {
@@ -28,7 +28,7 @@ const user = {
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(res => {
           if (res.code === 0) {
-            setToken(res.data.username)
+            setToken(res.data.name)
             setUserId(res.data.id)
             commit('SET_NAME', res.data.username)
             resolve()
@@ -38,20 +38,22 @@ const user = {
         }).catch(error => {
           reject(error)
         })
-        // setToken('res.data.username')
-        // setUserId('res.data.id')
+        // setToken('res.data.name')
+        // setUserId('1')
+        // commit('SET_NAME', 'res.data.username')
+        // resolve()
       })
     },
 
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo(getUserId()).then(response => {
+        getMeuns({ id: getUserId() }).then(response => {
           const data = response.data
-          if (data.listRole && data.listRole.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', ['editor'])
+          if (data && data.length > 0) { // 验证返回的roles是否是一个非空数组
+            commit('SET_ROLES', data)
           } else {
-            commit('SET_ROLES', ['editor'])
+            commit('SET_ROLES', ['roles'])
             // reject('getInfo: roles must be a non-null array !')
           }
           resolve(response)

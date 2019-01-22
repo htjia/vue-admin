@@ -107,6 +107,7 @@ export default {
                 type: 'success',
                 message: '添加成功!'
               })
+              this.$refs[formName].resetFields()
               this.addDialogVisible = false
               this.fetchData()
             }
@@ -133,6 +134,7 @@ export default {
                 type: 'success',
                 message: '编辑成功!'
               })
+              this.$refs[formName].resetFields()
               this.editDialogVisible = false
               this.fetchData()
             }

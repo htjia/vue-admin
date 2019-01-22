@@ -3,7 +3,8 @@
     :data="formatData"
     :row-style="showRow"
     v-bind="$attrs"
-    border>
+    border
+    class="tree-table">
     <el-table-column v-if="columns.length===0" label="名称">
       <template slot-scope="scope">
         <span v-for="space in scope.row._level" :key="space" class="ms-tree-space"/>
@@ -82,7 +83,7 @@ export default {
     },
     // 图标显示
     iconShow(index, record) {
-      return (index === 0 && record.child && record.child.length > 0)
+      return (index === 0 && record.children && record.children.length > 0)
     }
   }
 }
@@ -97,9 +98,13 @@ export default {
     to {opacity: 1;}
   }
 </style>
-
+<style scoped>
+  .tree-table>>> th:first-child>.cell{
+    padding-left: 15px!important;
+  }
+</style>
 <style lang="scss" rel="stylesheet/scss" scoped>
-  $color-blue: #009688;
+  $color-blue: #009494;
   $space-width: 18px;
   .ms-tree-space {
     position: relative;

@@ -31,8 +31,6 @@ export default {
         tooltip: {
           trigger: 'axis'
         },
-        toolbox: {
-        },
         calculable: false,
         xAxis: [
           {
@@ -58,7 +56,7 @@ export default {
             },
             axisLabel: {
               textStyle: {
-                color: '#888'
+                color: '#7a7a7a'
               }
             }
           }
@@ -77,7 +75,7 @@ export default {
             axisLabel: {
               margin: 15,
               textStyle: {
-                color: '#888'
+                color: '#7a7a7a'
               }
               // formatter: '{value} 包'
             },
@@ -96,14 +94,16 @@ export default {
           {
             name: '报废率',
             type: 'bar',
+            barMaxWidth: '15',
+            barMinHeight: 5,
             itemStyle: {
               normal: {
                 color: function(params) {
                   var colorList = [
-                    '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7',
-                    '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688',
-                    '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7',
-                    '#009688', '#7586b7', '#009688', '#7586b7', '#009688', '#7586b7'
+                    '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7',
+                    '#009494', '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7', '#009494',
+                    '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7',
+                    '#009494', '#7586b7', '#009494', '#7586b7', '#009494', '#7586b7'
                   ]
                   return colorList[params.dataIndex]
                 }
@@ -127,53 +127,6 @@ export default {
         }
       },
       abnormalOptions: {
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          x: '70%',
-          y: 'center',
-          // orient: 'vertical',  //垂直显示
-          // y: 'center',    //延Y轴居中
-          // x: 'right' //居右显示
-          data: ['一速速度不足', '料饼厚度不足', '炉温异常', '料厚度不足', '其他']
-        },
-        series: [
-          {
-            name: '异常',
-            type: 'pie',
-            radius: ['50%', '70%'],
-            avoidLabelOverlap: false,
-            label: {
-              normal: {
-                show: false,
-                position: 'center'
-              },
-              emphasis: {
-                show: true,
-                textStyle: {
-                  fontSize: '30',
-                  fontWeight: 'bold'
-                }
-              }
-            },
-            labelLine: {
-              normal: {
-                show: false
-              }
-            },
-            data: [
-              { value: 335, name: '一速速度不足' },
-              { value: 310, name: '料饼厚度不足' },
-              { value: 234, name: '炉温异常' },
-              { value: 135, name: '料厚度不足' },
-              { value: 1548, name: '其他' }
-            ],
-            center: ['30%', '50%']
-          }
-        ]
       },
       scrappageOptions: {
         tooltip: {
@@ -184,21 +137,22 @@ export default {
             type: 'category',
             data: ['2018-11-1', '2018-11-2', '2018-11-3', '2018-11-4', '2018-11-5', '2018-11-6', '2018-11-7', '2018-11-8', '2018-11-9', '2018-11-10', '2018-11-11', '2018-11-12', '2018-11-13', '2018-11-14'],
             nameTextStyle: {
-              color: '#888'
+              color: '#7a7a7a'
             },
             axisLine: {
               lineStyle: {
-                color: '#888',
+                color: '#7a7a7a',
                 width: 1
               }
             },
             axisTick: {
               lineStyle: {
-                color: '#888'
+                color: '#7a7a7a'
               }
             },
             axisLabel: {
-              margin: 15
+              margin: 15,
+              interval: 0
               // interval: 0,
               // formatter: function(value) {
               //   return value.split('').join('\n')
@@ -212,14 +166,14 @@ export default {
             type: 'value',
             axisLine: {
               lineStyle: {
-                color: '#888',
+                color: '#7a7a7a',
                 width: 1
               }
             },
             axisTick: {
               show: true,
               lineStyle: {
-                color: '#888'
+                color: '#7a7a7a'
               }
             },
             axisLabel: {
@@ -232,6 +186,7 @@ export default {
           {
             name: '报废率',
             type: 'line',
+            hoverAnimation: false,
             data: [11, 11, 15, 13, 12, 13, 10, 10, 10, 10, 10, 10, 10, 10]
           }
         ],

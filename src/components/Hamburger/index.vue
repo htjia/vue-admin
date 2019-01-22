@@ -1,6 +1,6 @@
 <template>
   <div>
-    <svg
+    <!--<svg
       :class="{'is-active':isActive}"
       t="1492500959545"
       class="hamburger"
@@ -22,7 +22,8 @@
       <path
         d="M966.8023 256.17345 57.196677 256.17345c-31.397081 0-56.850799-25.452695-56.850799-56.849776l0 0c0-31.397081 25.452695-56.850799 56.850799-56.850799l909.605623 0c31.397081 0 56.849776 25.452695 56.849776 56.850799l0 0C1023.653099 230.720755 998.200404 256.17345 966.8023 256.17345z"
         p-id="1694" />
-    </svg>
+    </svg>-->
+    <svg-icon :class="{'is-active':isActive}" class="hamburger" icon-class="zhedie" style="width: 20px;height: 20px;" @click.native="toggleClick" />
   </div>
 </template>
 
@@ -48,9 +49,11 @@ export default {
 	cursor: pointer;
 	width: 20px;
 	height: 20px;
-	transform: rotate(90deg);
+	transform: rotate(180deg);
 	transition: .38s;
 	transform-origin: 50% 50%;
+  margin-bottom: 1px;
+  margin-left: 5px;
 }
 .hamburger.is-active {
 	transform: rotate(0deg);
